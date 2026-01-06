@@ -1,0 +1,23 @@
+[project]
+name = "daily_reviewer"
+version = "0.1.0"
+description = "Daily browser history audit with deep analysis"
+requires-python = ">=3.10"
+dependencies = [
+    "langgraph>=0.0.1",
+    "langchain>=0.1.0",
+    "langchain-openai>=0.0.1",
+    "langchain-core>=0.1.0",
+    "pandas>=1.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["nodes"]
+
+[tool.uv]
+dev-dependencies = []
