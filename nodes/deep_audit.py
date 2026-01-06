@@ -12,7 +12,9 @@ def deep_agent_analysis_node(state):
     formatted_items = []
     for item in history_data:
         if "title" in item:
-            formatted_items.append(f"- [Chrome浏览] {item['title']}: {item['url']}")
+            visit_count = item.get('visit_count', 1)
+            count_str = f" (访问{visit_count}次)" if visit_count > 1 else ""
+            formatted_items.append(f"- [Chrome浏览]{count_str} {item['title']}: {item['url']}")
         elif "repo" in item:
             stats = item.get("stats", {})
             additions = stats.get("additions", 0)

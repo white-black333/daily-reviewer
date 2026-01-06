@@ -40,8 +40,19 @@ def get_chrome_history_node(state):
     conn.close()
     os.remove(temp_history) # 清理临时文件
 
-    # 简单清洗：只取前 20 条关键记录，避免上下文过长
-    history_summary = df[['title', 'url']].head(20).to_dict('records')
+    # 先取前 200 条记录，然后按 title 去重并统计访问次数
+    if not df.empty:
+        df_top = df.head(200)
+        # 按 title 分组，统计访问次数，保留第一个 url
+        df_grouped = df_top.groupby('title').agg({
+            'url': 'first',  # 保留第一个 url
+            'title': 'size'  # 统计出现次数
+        }).rename(columns={'title': 'visit_count'}).reset_index()
+        # 按访问次数降序排序
+        df_grouped = df_grouped.sort_values('visit_count', ascending=False)
+        history_summary = df_grouped.to_dict('records')
+    else:
+        history_summary = []
     
     # 将结果存入 State
     return {"data_list": history_summary}
