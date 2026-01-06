@@ -27,6 +27,10 @@ def get_default_chrome_history_path():
 
 CHROME_HISTORY_PATH = os.getenv("CHROME_HISTORY_PATH", get_default_chrome_history_path())
 
+# GitHub Configuration
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_USERNAME = os.getenv("GITHUB_USERNAME")
+
 # Validate required configuration
 if not LLM_API_KEY:
     raise ValueError("LLM_API_KEY environment variable is not set. Please check your .env file.")

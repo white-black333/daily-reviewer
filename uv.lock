@@ -148,6 +148,7 @@ dependencies = [
     { name = "langgraph" },
     { name = "pandas" },
     { name = "python-dotenv" },
+    { name = "requests" },
 ]
 
 [package.metadata]
@@ -158,6 +159,7 @@ requires-dist = [
     { name = "langgraph", specifier = ">=0.0.1" },
     { name = "pandas", specifier = ">=1.0.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
+    { name = "requests", specifier = ">=2.31.0" },
 ]
 
 [package.metadata.requires-dev]

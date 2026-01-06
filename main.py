@@ -1,6 +1,6 @@
 from typing import TypedDict, List
 from langgraph.graph import StateGraph, START, END
-from nodes import get_chrome_history_node, deep_agent_analysis_node
+from nodes import get_chrome_history_node, deep_agent_analysis_node, get_github_commits_node
 
 # 定义状态流转的结构
 class AgentState(TypedDict):
@@ -12,11 +12,13 @@ workflow = StateGraph(AgentState)
 
 # 2. 添加节点
 workflow.add_node("fetch_chrome", get_chrome_history_node)
+workflow.add_node("fetch_github", get_github_commits_node)
 workflow.add_node("deep_analysis", deep_agent_analysis_node)
 
 # 3. 建立连线
 workflow.add_edge(START, "fetch_chrome")
-workflow.add_edge("fetch_chrome", "deep_analysis")
+workflow.add_edge("fetch_chrome", "fetch_github")
+workflow.add_edge("fetch_github", "deep_analysis")
 workflow.add_edge("deep_analysis", END)
 
 # 4. 编译并运行

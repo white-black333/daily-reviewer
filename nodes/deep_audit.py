@@ -9,8 +9,23 @@ def deep_agent_analysis_node(state):
     print("--- DeepAgent 正在进行深度审计 ---")
     history_data = state.get("data_list", [])
     
-    # 格式化输入数据
-    formatted_data = "\n".join([f"- {item['title']}: {item['url']}" for item in history_data])
+    formatted_items = []
+    for item in history_data:
+        if "title" in item:
+            formatted_items.append(f"- [Chrome浏览] {item['title']}: {item['url']}")
+        elif "repo" in item:
+            stats = item.get("stats", {})
+            additions = stats.get("additions", 0)
+            deletions = stats.get("deletions", 0)
+            files_count = len(stats.get("files", []))
+            formatted_items.append(
+                f"- [Git提交] {item['repo']} - {item['message']} "
+                f"(+{additions}/-{deletions}, {files_count}个文件) {item['url']}"
+            )
+        elif "error" in item:
+            formatted_items.append(f"- [错误] {item['error']}")
+    
+    formatted_data = "\n".join(formatted_items)
 
     # 初始化 Qwen 模型
     llm = ChatOpenAI(
@@ -21,14 +36,14 @@ def deep_agent_analysis_node(state):
 
     system_prompt = """
     你是一个极其冷静且犀利的个人成长审计员。
-    用户会提供他今日的浏览历史，你需要通过这些碎片信息进行『深度推理』：
+    用户会提供他今日的浏览历史和 GitHub 提交记录，你需要通过这些碎片信息进行『深度推理』：
     1. 心理状态分析：他是在专注工作，还是在通过碎片化信息缓解焦虑？
     2. 认知偏离警告：他的行为是否背离了高效学习的目标？
     3. 毒舌且精准的改进建议：不给废话，只给一针见血的行动指令。
     请以"今日数字指纹审计报告"为标题。
     """
 
-    user_content = f"以下是我今天的浏览记录：\n{formatted_data}\n\n请开始你的深度审计。"
+    user_content = f"以下是我今天的活动记录：\n{formatted_data}\n\n请开始你的深度审计。"
     
     response = llm.invoke([
         SystemMessage(content=system_prompt),
