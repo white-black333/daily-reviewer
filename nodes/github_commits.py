@@ -9,7 +9,7 @@ def get_github_commits_node(state):
     print("--- 正在获取 GitHub 提交记录 ---")
     
     if not GITHUB_TOKEN or not GITHUB_USERNAME:
-        return {"data_list": state.get("data_list", []) + [{"error": "GitHub配置缺失"}]}
+        return {"data_list": [{"error": "GitHub配置缺失"}]}
     
     headers = {
         "Authorization": f"token {GITHUB_TOKEN}",
@@ -70,7 +70,6 @@ def get_github_commits_node(state):
         
     except requests.exceptions.RequestException as e:
         print(f"✗ GitHub API 请求失败: {str(e)}")
-        return {"data_list": state.get("data_list", []) + [{"error": f"GitHub请求失败: {str(e)}"}]}
+        return {"data_list": [{"error": f"GitHub请求失败: {str(e)}"}]}
     
-    current_data = state.get("data_list", [])
-    return {"data_list": current_data + commits_summary}
+    return {"data_list": commits_summary}
