@@ -18,6 +18,46 @@ daily_reviewer/
 └── README.md               # This file
 ```
 
+## Architecture
+
+The system uses **LangGraph** to orchestrate a cyclic workflow ("DeepAgent 2.0"):
+
+```mermaid
+graph TD
+    %% Nodes
+    Included_Start((Start))
+    Fetch_Chrome[Fetch Chrome History]
+    Fetch_GitHub[Fetch GitHub Commits]
+    Fetch_Todo[Fetch Todo List]
+    Deep_Analysis{Deep Agent Analysis<br/>(Brain)}
+    Web_Fetcher[Web Fetcher<br/>(Recursive Inquiry)]
+    Update_Todo[Update Todo<br/>(Self-Correction)]
+    Included_End((End))
+
+    %% Data Collection Phase
+    Included_Start --> Fetch_Chrome
+    Included_Start --> Fetch_GitHub
+    Included_Start --> Fetch_Todo
+
+    %% Aggregation
+    Fetch_Chrome --> Deep_Analysis
+    Fetch_GitHub --> Deep_Analysis
+    Fetch_Todo --> Deep_Analysis
+
+    %% Cyclic Logic (The "Loop")
+    Deep_Analysis -- Needs Info? --> Web_Fetcher
+    Deep_Analysis -- Too Hard? --> Update_Todo
+    Deep_Analysis -- Done --> Included_End
+
+    %% Feedback Loops
+    Web_Fetcher --> Deep_Analysis
+    Update_Todo --> Deep_Analysis
+
+    %% Styling
+    classDef brain fill:#f96,stroke:#333,stroke-width:2px;
+    class Deep_Analysis brain;
+```
+
 ## Features
 
 - **Chrome History Fetching**: Automatically retrieves today's browser history
